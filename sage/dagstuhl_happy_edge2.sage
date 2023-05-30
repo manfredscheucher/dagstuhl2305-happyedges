@@ -78,17 +78,16 @@ for ct,line in enumerate(open(fp).readlines()):
 	stat.append(diam)
 
 	if args.maxdistpair or diam >= n:
-		dist = G.distance_matrix()
-		for u,v in combinations(G,2):
-			if dist[u][v] >= diam:
-				print("distance",dist[u][v],":",trees[u],trees[v])
-				break
+		#dist = G.distance_matrix()
+		#for u,v in combinations(G,2):
+		#	if dist[u][v] >= diam:
+		#		print("distance",dist[u][v],":",trees[u],trees[v])
+		#		break
 
-
-	#H = G.distance_graph(diam)
-	#for u,v in H.edges(labels=0):
-	#	print("distance",diam,"@",trees[u],trees[v])
-	#	break
+		H = G.distance_graph(diam)
+		for u,v in H.edges(labels=0):
+			print("distance",diam,"@",trees[u],trees[v])
+			break
 
 
 	#for u,v in combinations(G,2):
