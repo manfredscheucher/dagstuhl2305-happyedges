@@ -10,7 +10,7 @@ def edges_cross(chi,e,f):
 
 def enum_trees(n,edge_crossings,selection=set(),I_dont_care_if_it_is_a_tree=False):
 	if len(selection) == n-1:
-		if Graph(list(selection)).is_connected() or I_dont_care_if_it_is_a_tree:
+		if Graph(list(selection)).is_tree() or I_dont_care_if_it_is_a_tree:
 			yield selection
 	else:
 		for e in edge_crossings:
