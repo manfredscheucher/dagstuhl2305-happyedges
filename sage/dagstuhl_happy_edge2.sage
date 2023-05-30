@@ -45,15 +45,36 @@ for ct,line in enumerate(open(fp).readlines()):
 	#for T in trees: print(T)
 
 	E = []
-	for t1,t2 in combinations(range(len(trees)),2):
-		if len(trees[t1]&trees[t2]) == n-2:
-			E.append([t1,t2])
+	group = {}
+	for t in range(len(trees)):
+		t_e = list(sorted(trees[t]))
+		if t_e[0] not in group: group[t_e[0]] = []
+		if t_e[1] not in group: group[t_e[1]] = []
+		group[t_e[0]].append(t)
+		group[t_e[1]].append(t)
+
+	for e in group:
+		for t1,t2 in combinations(group[e],2):
+			if len(trees[t1]&trees[t2]) == n-2:
+				E.append([t1,t2])
 
 	G = Graph(E)
 	diam = G.diameter()
 	print("diam",diam)
 	stat.append(diam)
+
+	H = G.distance_graph(diam)
+	for u,v in H.edges(labels=0):
+		print("distance",diam,"@",trees[u],trees[v])
+		break
+
+
+	#dist = G.distance_matrix()
+	#for u,v in combinations(G,2):
+	#	if dist[u][v] >= n:
+
 	continue
+
 #	print("sym",len(G),G.automorphism_group().order())
 	#print("G",G.sparse6_string())
 	A_G = G.automorphism_group()
