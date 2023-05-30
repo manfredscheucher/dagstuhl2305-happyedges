@@ -82,7 +82,7 @@ for ct,line in enumerate(open(fp).readlines()):
 	print("diam",diam)
 	stat.append(diam)
 
-	if args.maxdistpair or diam >= n:
+	if args.maxdistpair:
 		#dist = G.distance_matrix()
 		#for u,v in combinations(G,2):
 		#	if dist[u][v] >= diam:
