@@ -95,29 +95,31 @@ for ct,line in enumerate(open(fp).readlines()):
 	#		print("distance",diam,"@",trees[u],trees[v])
 	#		break
 
-	continue
 
 #	print("sym",len(G),G.automorphism_group().order())
 	#print("G",G.sparse6_string())
-	A_G = G.automorphism_group()
-	assert(min(G.degree())>1) # add dummy node to mark vertex
-	for t1 in G:
-		if t1 == min(A_G.orbit(t1)):
-			H = Graph(G.edges())
-			H.add_vertex(-1)
-			H.add_edge(t1,-1)
-			A_H = H.automorphism_group()
-			for t2 in G:
-				if t2 != -1 and t2 != t1 and t2 == min(A_H.orbit(t2)):
-					d = G.distance(t1,t2)
-					common_edges = trees[t1]&trees[t2]
-					if not common_edges: continue
-					G12 = G.subgraph(vertices=[t for t in G if common_edges.issubset(trees[t])])
-					d12 = G12.distance(t1,t2)
-					if d12 != d:
-						print("t1",t1)
-						print("t2",t2)
-						exit("found!")
+
+	if args.happytest:
+		A_G = G.automorphism_group()
+		assert(min(G.degree())>1) # add dummy node to mark vertex
+		for t1 in G:
+			if t1 == min(A_G.orbit(t1)):
+				H = Graph(G.edges())
+				H.add_vertex(-1)
+				H.add_edge(t1,-1)
+				A_H = H.automorphism_group()
+				for t2 in G:
+					if t2 != -1 and t2 != t1 and t2 == min(A_H.orbit(t2)):
+						d = G.distance(t1,t2)
+						common_edges = trees[t1]&trees[t2]
+						if not common_edges: continue
+						G12 = G.subgraph(vertices=[t for t in G if common_edges.issubset(trees[t])])
+						d12 = G12.distance(t1,t2)
+						if d12 != d:
+							print("t1",t1)
+							print("t2",t2)
+							exit("found counterexample to conjecture!!")
+		print("happy :)")
 
 print("fine.")
 print("diam",min(stat),max(stat))
