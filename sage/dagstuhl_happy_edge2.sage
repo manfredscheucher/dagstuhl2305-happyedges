@@ -8,9 +8,10 @@ def edges_cross(chi,e,f):
 	return ( chi[a,b,c]*chi[a,b,d] == -1 ) and (chi[a,c,d]*chi[b,c,d] == -1 )
 
 
-def enum_trees(n,edge_crossings,selection=set()):
+def enum_trees(n,edge_crossings,selection=set(),I_dont_care_if_it_is_a_tree=False):
 	if len(selection) == n-1:
-		yield selection
+		if Graph(list(selection)).is_connected() or I_dont_care_if_it_is_a_tree:
+			yield selection
 	else:
 		for e in edge_crossings:
 			if selection and e < max(selection): continue
@@ -19,11 +20,24 @@ def enum_trees(n,edge_crossings,selection=set()):
 					yield T
 
 
-n = int(argv[1])
+
+import argparse
+parser = argparse.ArgumentParser()
+
+parser.add_argument("n",type=int,help="number of points")
+parser.add_argument("fp",type=str,help="input file path")
+parser.add_argument("--happytest","-ht",action='store_true', help="test happyness")
+parser.add_argument("--maxdistpair","-mdp",action='store_true', help="find pair at max distance")
+
+args = parser.parse_args()
+print("args",args)
+
+
+n = args.n
 N = range(n)
 
 stat = []
-fp = argv[2]
+fp = args.fp
 for ct,line in enumerate(open(fp).readlines()):
 	line=line.replace("\n","")
 	N3 = list(combinations(N,3))
@@ -63,15 +77,23 @@ for ct,line in enumerate(open(fp).readlines()):
 	print("diam",diam)
 	stat.append(diam)
 
-	H = G.distance_graph(diam)
-	for u,v in H.edges(labels=0):
-		print("distance",diam,"@",trees[u],trees[v])
-		break
+	dist = G.distance_matrix()
+	for u,v in combinations(G,2):
+		if dist[u][v] >= diam:
+			print("distance",dist[u][v],":",trees[u],trees[v])
+			break
 
 
-	#dist = G.distance_matrix()
+	#H = G.distance_graph(diam)
+	#for u,v in H.edges(labels=0):
+	#	print("distance",diam,"@",trees[u],trees[v])
+	#	break
+
+
 	#for u,v in combinations(G,2):
-	#	if dist[u][v] >= n:
+	#	if G.distance(u,v) >= n:
+	#		print("distance",diam,"@",trees[u],trees[v])
+	#		break
 
 	continue
 
