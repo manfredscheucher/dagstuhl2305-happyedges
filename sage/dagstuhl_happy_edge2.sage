@@ -41,9 +41,14 @@ fp = args.fp
 for ct,line in enumerate(open(fp).readlines()):
 	line=line.replace("\n","")
 	N3 = list(combinations(N,3))
+	assert(len(N3) == len(line))
 	chi = {}
 	for i,(a,b,c) in enumerate(N3):
-		x = +1 if line[i] == '+' else -1
+		if line[i] == '+': 
+			x = +1 
+		else:
+			assert(line[i] == '-')
+			x = -1
 		chi[a,b,c] = chi[b,c,a] = chi[c,a,b] = x
 		chi[b,a,c] = chi[c,b,a] = chi[a,c,b] = -x
 
