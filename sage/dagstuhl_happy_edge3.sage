@@ -111,11 +111,12 @@ for ct,line in enumerate(open(fp).readlines()):
 	#print("G",G.sparse6_string())
 
 	if args.happytest:
-		print("happytest: compute pairs")
+		print("happytest")
 		A_G = G.automorphism_group()
 		pairs_to_test = set()
 		assert(min(G.degree())>1) # add dummy node to mark vertex
-		for t1 in G:
+
+		def test_happy(t1):
 			if t1 == min(A_G.orbit(t1)):
 				H = Graph(G.edges())
 				H.add_vertex(-1)
@@ -123,15 +124,12 @@ for ct,line in enumerate(open(fp).readlines()):
 				A_H = H.automorphism_group()
 				for t2 in G:
 					if t2 != -1 and t2 != t1 and t2 == min(A_H.orbit(t2)) and trees[t1]&trees[t2]:
-						pair = tuple(sorted([t1,t2]))
-						if pair not in pairs_to_test: 
-							pairs_to_test.add(pair)
+						test_pair(t1,t2)
+						#pair = tuple(sorted([t1,t2]))
+						#if pair not in pairs_to_test: 
+						#	pairs_to_test.add(pair)
 
-
-		print("pairs to test:",len(pairs_to_test))
-
-		def test_pair(params):
-			params = (t1,t2)
+		def test_pair(t1,t2):
 			common_edges = trees[t1]&trees[t2]
 			d = G.distance(t1,t2)
 			G12 = G.subgraph(vertices=[t for t in G if common_edges.issubset(trees[t])])
@@ -146,9 +144,9 @@ for ct,line in enumerate(open(fp).readlines()):
 			return True
 
 		if args.parallel:
-			result = Pool(cpu_count()).map(test_pair,pairs_to_test)
+			result = Pool(cpu_count()).map(test_happy,N)
 		else:
-			result = map(test_pair,pairs_to_test) # single threaded
+			result = map(test_happy,N) # single threaded
 	
 		if False not in result:
 			print("all happy :)")
