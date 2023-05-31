@@ -44,7 +44,7 @@ N = range(n)
 stat = []
 fp = args.fp
 for ct,line in enumerate(open(fp).readlines()):
-	if args.only != None and args.only != ct+1: continue 
+	if args.only != None and args.only != ct+1: continue  # note off by one because qsub does not allow index 0
 
 	line=line.replace("\n","")
 	N3 = list(combinations(N,3))
