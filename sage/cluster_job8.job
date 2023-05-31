@@ -1,0 +1,11 @@
+#!/bin/bash --login
+#$ -cwd
+#$ -N happy8
+#$ -o _happy8.$TASK_ID.out
+#$ -e _happy8.$TASK_ID.err
+#$ -j n
+#$ -l h_rt=720000
+#$ -m abe
+#$ -M scheuch@math.tu-berlin.de
+
+time /net/site-local.linux64/bin/sage dagstuhl_happy_edge3.sage 8 all8.chi -ht --only ${SGE_TASK_ID}
