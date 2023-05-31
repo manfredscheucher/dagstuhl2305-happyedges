@@ -106,6 +106,7 @@ for ct,line in enumerate(open(fp).readlines()):
 
 	if args.happytest:
 		A_G = G.automorphism_group()
+		already_tested_pairs = set()
 		assert(min(G.degree())>1) # add dummy node to mark vertex
 		for t1 in G:
 			if t1 == min(A_G.orbit(t1)):
@@ -115,15 +116,18 @@ for ct,line in enumerate(open(fp).readlines()):
 				A_H = H.automorphism_group()
 				for t2 in G:
 					if t2 != -1 and t2 != t1 and t2 == min(A_H.orbit(t2)):
-						d = G.distance(t1,t2)
-						common_edges = trees[t1]&trees[t2]
-						if not common_edges: continue
-						G12 = G.subgraph(vertices=[t for t in G if common_edges.issubset(trees[t])])
-						d12 = G12.distance(t1,t2)
-						if d12 != d:
-							print("t1",t1)
-							print("t2",t2)
-							exit("found counterexample to conjecture!!")
+						pair = tuple(sorted([t1,t2]))
+						if pair not in already_tested_pairs: 
+							already_tested_pairs.add(pair)
+							d = G.distance(t1,t2)
+							common_edges = trees[t1]&trees[t2]
+							if not common_edges: continue
+							G12 = G.subgraph(vertices=[t for t in G if common_edges.issubset(trees[t])])
+							d12 = G12.distance(t1,t2)
+							if d12 != d:
+								print("t1",t1)
+								print("t2",t2)
+								exit("found counterexample to conjecture!!")
 		print("happy :)")
 
 print("fine.")
