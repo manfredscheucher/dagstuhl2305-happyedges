@@ -1,6 +1,6 @@
 #!/bin/bash --login
 #$ -cwd
-#$ -N happy.$TASK_ID
+#$ -N happy.${SGE_TASK_ID}
 #$ -o happy.$TASK_ID.out
 #$ -e happy.$TASK_ID.err
 #$ -j n
@@ -8,4 +8,4 @@
 #$ -m abe
 #$ -M scheuch@math.tu-berlin.de
 
-time /net/site-local.linux64/bin/sage dagstuhl_happy_edge2.sage 6 all6.chi --only ${SGE_TASK_ID}
+time /net/site-local.linux64/bin/sage dagstuhl_happy_edge3.sage 6 all6.chi --only ${SGE_TASK_ID}
