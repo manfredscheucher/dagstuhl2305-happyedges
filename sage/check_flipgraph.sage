@@ -41,7 +41,7 @@ def enum_structures(n,edge_crossings,selection=set()):
 	maximal = True
 	for e in edge_crossings:
 		if not e in selection and not edge_crossings[e]&selection: # planarity
-			if args.structure == 'tree' and not Graph(list(selection|{e})).is_tree(): continue 
+			if args.structure == 'spanningtree' and not Graph(list(selection|{e})).is_tree(): continue 
 			maximal = False
 			if selection and e < max(selection): continue
 			for T in enum_structures(n,edge_crossings,selection|{e}):
@@ -102,7 +102,7 @@ def min_area(triangulation,pts):
 import argparse
 parser = argparse.ArgumentParser()
 
-parser.add_argument("structure",type=str,choices=['tree','triangulation','triangulation+angle','triangulation+area'],help="structure for flipgraph")
+parser.add_argument("structure",type=str,choices=['spanningtree','triangulation','triangulation+angle','triangulation+area'],help="structure for flipgraph")
 
 parser.add_argument("fp",type=str,help="input file path") 
 parser.add_argument("--n",type=int,help="number of points")
@@ -204,7 +204,7 @@ for ct,line in enumerate(open(fp).readlines()):
 
 		def test_pair(t1,t2):
 			d = G.distance(t1,t2)
-			if args.structure == 'tree':
+			if args.structure == 'spanningtree':
 				common_edges = structs[t1]&structs[t2]
 				G12 = G.subgraph(vertices=[t for t in G if common_edges.issubset(structs[t])])
 			elif args.structure in ['triangulation+angle','triangulation+area']:
