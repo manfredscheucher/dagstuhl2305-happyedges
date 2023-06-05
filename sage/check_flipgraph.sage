@@ -94,7 +94,7 @@ def min_area(triangulation,pts):
 	for f in F:
 		f_vecs = [(pts_vec[f[i-1]]-pts_vec[f[i]]) for i in range(3)]
 		areas.append(abs(f_vecs[0].cross_product(f_vecs[1])))
-	print(areas)
+	#print(areas)
 	return min(areas)
 
 
@@ -146,19 +146,19 @@ for ct,line in enumerate(open(fp).readlines()):
 	edges = list(combinations(N,2))
 	edge_crossings = {e:{f for f in edges if not set(e)&set(f) and edges_cross(chi,e,f)} for e in edges}
 
-	trees = list(enum_structures(n,edge_crossings))
-	print("number of",args.structure,":",len(trees))
+	structs = list(enum_structures(n,edge_crossings))
+	print("number of",args.structure,":",len(structs))
 
-#	for T in trees: print(T)
+#	for T in structs: print(T)
 #	exit()
 
 	group = {}
 
 	G = Graph()
-	for t in range(len(trees)):
+	for t in range(len(structs)):
 		G.add_vertex(t)
 
-		t_e = list(sorted(trees[t]))
+		t_e = list(sorted(structs[t]))
 		if t_e[0] not in group: group[t_e[0]] = []
 		if t_e[1] not in group: group[t_e[1]] = []
 		group[t_e[0]].append(t)
@@ -166,7 +166,7 @@ for ct,line in enumerate(open(fp).readlines()):
 
 	for e in group:
 		for t1,t2 in combinations(group[e],2):
-			if len(trees[t1]&trees[t2]) == len(trees[t1])-1:
+			if len(structs[t1]&structs[t2]) == len(structs[t1])-1:
 				G.add_edge(t1,t2)
 
 
@@ -177,7 +177,7 @@ for ct,line in enumerate(open(fp).readlines()):
 	if args.maxdistpair:
 		H = G.distance_graph(diam)
 		for u,v in H.edges(labels=0):
-			print("distance",diam,"@",trees[u],trees[v])
+			print("distance",diam,"@",structs[u],structs[v])
 			break
 
 
@@ -198,15 +198,15 @@ for ct,line in enumerate(open(fp).readlines()):
 
 				A_H = H.automorphism_group()
 				for t2 in G:
-					if t2 != -1 and t2 != t1 and t2 == min(A_H.orbit(t2)) and trees[t1]&trees[t2]:
+					if t2 != -1 and t2 != t1 and t2 == min(A_H.orbit(t2)) and structs[t1]&structs[t2]:
 						test_pair(t1,t2)
 
 
 		def test_pair(t1,t2):
 			d = G.distance(t1,t2)
 			if args.structure == 'tree':
-				common_edges = trees[t1]&trees[t2]
-				G12 = G.subgraph(vertices=[t for t in G if common_edges.issubset(trees[t])])
+				common_edges = structs[t1]&structs[t2]
+				G12 = G.subgraph(vertices=[t for t in G if common_edges.issubset(structs[t])])
 			elif args.structure in ['triangulation+angle','triangulation+area']:
 				G12 = G.subgraph(vertices=[t for t in G if weight[t] >= min(weight[t1],weight[t2])])
 			else:
@@ -225,18 +225,18 @@ for ct,line in enumerate(open(fp).readlines()):
 
 		if args.structure == 'triangulation+angle':
 			print("compute weights")
-			weight = {t:min_angle(trees[t],pts) for t in range(len(trees))}
-			print("weight:",weight)
+			weight = {t:min_angle(structs[t],pts) for t in range(len(structs))}
+			print("weights:",weight)
 		if args.structure == 'triangulation+area':
 			print("compute weights")
-			weight = {t:min_area(trees[t],pts) for t in range(len(trees))}
+			weight = {t:min_area(structs[t],pts) for t in range(len(structs))}
 			print("weight:",weight)
 			
 
 		if args.parallel:
-			result = Pool(cpu_count()).map(test_happy,range(len(trees))) # parallel
+			result = Pool(cpu_count()).map(test_happy,range(len(structs))) # parallel
 		else:
-			result = map(test_happy,range(len(trees))) # single threaded
+			result = map(test_happy,range(len(structs))) # single threaded
 	
 		if False not in result:
 			print("all happy :)")
