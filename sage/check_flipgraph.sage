@@ -149,9 +149,6 @@ for ct,line in enumerate(open(fp).readlines()):
 	structs = list(enum_structures(n,edge_crossings))
 	print("number of",args.structure,":",len(structs))
 
-#	for T in structs: print(T)
-#	exit()
-
 	group = {}
 
 	G = Graph()
